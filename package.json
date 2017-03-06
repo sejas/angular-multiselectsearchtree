@@ -1,11 +1,11 @@
 {
-  "name": "kjvelarde-angular-multiselectsearchtree",
+  "name": "sejas-angular-multiselectsearchtree",
   "version": "1.0",
   "description": "Amazing tree list component; bind ready with ability to search. Powered by AngularJS",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kjvelarde/angular-multiselectsearchtree"
+    "url": "https://github.com/sejas/angular-multiselectsearchtree"
   },
   "keywords": [
     "angular",
