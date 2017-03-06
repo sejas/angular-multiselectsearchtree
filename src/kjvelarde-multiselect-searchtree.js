@@ -203,73 +203,73 @@
           } else {
             $scope.selectedItems.push(item);
           }
-		  		  
-		  if(item.children && item.children.length > 0){
-			  domino(item.children);
-			function domino(x){
-				x.forEach(function(child){
-				 if(item.selected && !child.selected){
-					$scope.selectedItems.push(child);
-				 }else if(!item.selected && child.selected){
-					$scope.selectedItems.splice($scope.selectedItems.indexOf(child), 1);
-				 }
-				 child.selected = item.selected; 				 
-				 if(child.children && child.children.length > 0){ // child has children
-					 domino(child.children);
-				 }
-			  });
-			}			  
-		  }
+            
+      if(item.children && item.children.length > 0){
+        domino(item.children);
+      function domino(x){
+        x.forEach(function(child){
+         if(item.selected && !child.selected){
+          $scope.selectedItems.push(child);
+         }else if(!item.selected && child.selected){
+          $scope.selectedItems.splice($scope.selectedItems.indexOf(child), 1);
+         }
+         child.selected = item.selected;         
+         if(child.children && child.children.length > 0){ // child has children
+           domino(child.children);
+         }
+        });
+      }       
+      }
         }
         this.refreshOutputModel();
       };
-	  	  
-	  /**
+        
+    /**
        * Click Event Handler.
        * Select all options
        * @param items = List of options
        */
-	  $scope.onSelectAll = function(items,$event){
-		  items.forEach(function(item){
-			selectAll(item);		
-		  });
-		  
-		  function selectAll(item){
-			  item.selected = true;
-			  if(item.children.length > 0){
-				  item.children.forEach(function(child){
-					selectAll(child);  
-			      });
-			  }	
-		  };
-		  this.refreshSelectedItems();
-		  this.refreshOutputModel();
-	  };
-	  
-	  
-	   /**
+    $scope.onSelectAll = function(items,$event){
+      items.forEach(function(item){
+      selectAll(item);    
+      });
+      
+      function selectAll(item){
+        item.selected = true;
+        if(item.children.length > 0){
+          item.children.forEach(function(child){
+          selectAll(child);  
+            });
+        } 
+      };
+      this.refreshSelectedItems();
+      this.refreshOutputModel();
+    };
+    
+    
+     /**
        * Click Event Handler.
        * Deselect all options
        * @param items = List of options
        */
-	  $scope.onClearAll = function(items,$event){
-		  items.forEach(function(item){
-			deselectAll(item);		
-		  });
-		  
-		  function deselectAll(item){
-			  item.selected = false;
-			  if(item.children.length > 0){
-				  item.children.forEach(function(child){
-					deselectAll(child);  
-			      });
-			  }	
-		  };
-		  this.refreshSelectedItems();
-		  this.refreshOutputModel();
-	  };
-	  
-	
+    $scope.onClearAll = function(items,$event){
+      items.forEach(function(item){
+      deselectAll(item);    
+      });
+      
+      function deselectAll(item){
+        item.selected = false;
+        if(item.children.length > 0){
+          item.children.forEach(function(child){
+          deselectAll(child);  
+            });
+        } 
+      };
+      this.refreshSelectedItems();
+      this.refreshOutputModel();
+    };
+    
+  
     }
   ]);
   /**
@@ -286,19 +286,19 @@
         selectOnlyLeafs: '=?',
         callback: '&',
         defaultLabel: '@',
-		extraButtons: '=?',
-		directSearch: '=?',
-		filterType: '@'
+    extraButtons: '=?',
+    directSearch: '=?',
+    filterType: '@'
       },
       link: function (scope, element, attrs) {
         if (attrs.callback) {
           scope.useCallback = true;
         }
-		
-		if(scope.extraButtons){			
-		  scope.clearSearchIconStyle = {right:'240px'}
-		}		
-		
+    
+    if(scope.extraButtons){     
+      scope.clearSearchIconStyle = {right:'240px'}
+    }   
+    
         // watch for changes in input model as a whole
         // this on updates the multi-select when a user load a whole new input-model.
         scope.$watch('inputModel', function (newVal) {
@@ -315,13 +315,20 @@
            * @returns {boolean} false if matches.
            */
         function isChildrenFiltered(item, keyword) {
+
           var childNodes = getAllChildNodesFromNode(item, []);
+          var nonChildMatch = true;
           for (var i = 0, len = childNodes.length; i < len; i++) {
             if (childNodes[i].name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
-              return false;
+              childNodes[i].isFiltered = false;
+              nonChildMatch = false;
+            }else{
+              if (0 == childNodes[i].children.length) { //is leaf
+                childNodes[i].isFiltered = true;
+              }
             }
           }
-          return true;
+          return nonChildMatch;
         }
         /**
            * Return all childNodes of a given node (as Array of Nodes)
@@ -334,46 +341,48 @@
           }
           return childNodes;
         }
-		
-		function hasParent(item){			
-			item.isFiltered = false;
-			if(item.p != undefined)
-				hasParent(item.p);
-		}
-		
-		function directSearchFilter(item, parent){
-				 if (item.name.toLowerCase().indexOf(scope.filterKeyword.toLowerCase()) !== -1) {					 		
-					hasParent(item);					
+    
+    function hasParent(item){     
+      // item.isFiltered = false;
+      if(item.p != undefined)
+        hasParent(item.p);
+    }
+    
+    function directSearchFilter(item, parent){
+         if (item.name.toLowerCase().indexOf(scope.filterKeyword.toLowerCase()) !== -1) {             
+          hasParent(item);          
               } else {
                   item.isFiltered = true;                  
               }
-			  
-			  if(item.children.length > 0){
-				  angular.forEach(item.children, function(child){
-					 child.p = item; // add reference of parent
-					 directSearchFilter(child); 
-				  });
-			  }
-		}
-		
-		function indirectSearchFilter(item){
-			if (item.name.toLowerCase().indexOf(scope.filterKeyword.toLowerCase()) !== -1) {
-                item.isFiltered = false;
-              } else if (!isChildrenFiltered(item, scope.filterKeyword)) {
-                item.isFiltered = false;
-              } else {
-                  item.isFiltered = true;
-                  //console.dir(angular.element(this));
-              }
-		}
-		
+        
+        if(item.children.length > 0){
+          angular.forEach(item.children, function(child){
+           child.p = item; // add reference of parent
+           directSearchFilter(child); 
+          });
+        }
+    }
+    
+    function indirectSearchFilter(item){
+      if (item.name.toLowerCase().indexOf(scope.filterKeyword.toLowerCase()) !== -1) {
+        item.isFiltered = false;
+        //run filter children
+        isChildrenFiltered(item, scope.filterKeyword)
+      } else if (!isChildrenFiltered(item, scope.filterKeyword)) {
+        item.isFiltered = false;
+      } else {
+          item.isFiltered = true;
+          //console.dir(angular.element(this));
+      }
+    }
+    
         scope.$watch('filterKeyword', function () {
           if (scope.filterKeyword !== undefined) {
-			  	if(scope.directSearch){
-					angular.forEach(scope.inputModel, function (item) {directSearchFilter(item);});
-				}else{
-					angular.forEach(scope.inputModel, function (item) {indirectSearchFilter(item);});
-				}	            
+          if(scope.directSearch){
+          angular.forEach(scope.inputModel, function (item) {directSearchFilter(item);});
+        }else{
+          angular.forEach(scope.inputModel, function (item) {indirectSearchFilter(item);});
+        }             
           }
         });
       },

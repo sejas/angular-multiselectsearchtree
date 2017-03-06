@@ -7,7 +7,7 @@ angular.module('multiselect-searchtree').run(['$templateCache', function ($templ
       "        <div class=\"helper-container\">\n" +
       "            <div class=\"line\">\n" +
       "                 <div class=\"input-group\">" +
-      "                      <input ng-hide=\"filterType === 'hidden'\" ng-disabled=\"filterType === 'disable'\" placeholder=\"Search...\" type=\"text\" ng-model=\"filterKeyword\" ng-click=\"onFilterClicked($event)\"\n" +
+      "                      <input ng-hide=\"filterType === 'hidden'\" ng-disabled=\"filterType === 'disable'\" placeholder=\"Filtrar por nombre\" type=\"text\" ng-model=\"filterKeyword\" ng-click=\"onFilterClicked($event)\"\n" +
       "                       class=\"form-control\">\n" +
       " <span class=\"clear-button\" ng-click=\"clearFilter($event)\" ng-style=\"clearSearchIconStyle\"><span class=\"item-close\"></span></span>\n" +
       "                      <span ng-hide=\"filterType === 'hidden'\" ng-disabled=\"filterType === 'disable'\" class=\"input-group-addon\">" +
@@ -16,7 +16,7 @@ angular.module('multiselect-searchtree').run(['$templateCache', function ($templ
      "                      <span class=\"input-group-addon\" ng-if=\"extraButtons\" style=\"cursor: pointer;\" ng-click=\"onSelectAll(inputModel,$event)\">" +
       "                     <i class=\"glyphicon glyphicon-ok\"></i> Select All" +
       "                      </span>" +
-	       "                      <span class=\"input-group-addon\" ng-if=\"extraButtons\" style=\"cursor: pointer;\" ng-click=\"onClearAll(inputModel,$event)\">" +
+           "                      <span class=\"input-group-addon\" ng-if=\"extraButtons\" style=\"cursor: pointer;\" ng-click=\"onClearAll(inputModel,$event)\">" +
       "                     <i class=\"glyphicon glyphicon-remove\"></i> Clear All" +
       "                      </span>" +
       "                  </div>" +           
